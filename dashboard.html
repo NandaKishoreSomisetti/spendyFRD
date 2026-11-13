@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>spendyFRD — Student Expense & Statement Analyzer Workspace</title>
+  <meta name="description" content="100% private in-browser student expense and bank statement analyzer with auto-categorization and savings recommendations." />
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- PDF.js CDN (v3.11.174) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <!-- jsPDF & AutoTable CDN for PDF Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+  <!-- Top Glassmorphic Sticky Navbar -->
+  <header class="top-nav-wrap">
+    <nav class="top-nav" aria-label="Main Navigation">
+      <div class="nav-brand">
+        <a href="dashboard.html" class="brand-link">
+          <div class="nav-logo">₹</div>
+          <div class="nav-titles">
+            <span class="nav-app-name">spendy<span>FRD</span></span>
+            <span class="nav-app-sub">Student Money Companion</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Language Selector -->
+        <div class="lang-selector-wrap">
+          <i data-lucide="globe" class="lang-globe-icon"></i>
+          <select id="langSelect" class="lang-select" aria-label="Select Language">
+            <option value="en">English (EN)</option>
+            <option value="te">తెలుగు (Telugu)</option>
+            <option value="hi">हिन्दी (Hindi)</option>
+          </select>
+        </div>
+
+        <!-- Personalized Greeting Badge -->
+        <div class="user-badge" id="userBadge">
+          <div class="user-avatar" id="userAvatar">
+            <i data-lucide="user"></i>
+          </div>
+          <span class="welcome-text" id="welcomeUser">Hi, Student</span>
+        </div>
+
+        <!-- Theme Switcher (Dark / Light) -->
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle Dark/Light Mode" title="Toggle Theme">
+          <i data-lucide="sun" id="themeIconSun" class="theme-icon sun"></i>
+          <i data-lucide="moon" id="themeIconMoon" class="theme-icon moon"></i>
+        </button>
+
+        <!-- Logout Button -->
+        <button type="button" class="logout-btn" id="logoutBtn" aria-label="Sign out of spendyFRD">
+          <i data-lucide="log-out"></i>
+          <span data-i18n="logout">Logout</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Dashboard Container -->
+  <main class="dashboard-main">
+    <div class="content-container">
+
+      <!-- Hero Header Section -->
+      <section class="dashboard-hero">
+        <div class="hero-badge">
+          <span class="pulse-emerald"></span>
+          <span data-i18n="privacyBadge">100% Client-Side Privacy · No Server Upload</span>
+        </div>
+        <h1 class="hero-title" data-i18n="dashTitle">Student Expense &amp; Statement Analyzer</h1>
+        <p class="hero-subtitle" data-i18n="dashSubtitle">
+          Upload any bank or UPI statement (PDF, CSV, TXT) or log daily cash canteen spends. Everything is processed privately in your browser.
+        </p>
+      </section>
+
+      <!-- Input Grid: Statement Upload + Manual Cash Entry -->
+      <section class="dual-input-grid" aria-label="Input Methods">
+        <!-- Left: Statement Upload Card -->
+        <div class="input-card upload-card" id="dropZoneCard">
+          <div class="card-header-row">
+            <div class="card-title-group">
+              <span class="card-step-badge">1</span>
+              <div>
+                <h2 data-i18n="step1Title">Upload Bank / UPI Statement</h2>
+                <p class="card-caption" data-i18n="step1Caption">PhonePe, GPay, Paytm, SBI, HDFC, ICICI, etc.</p>
+              </div>
+            </div>
+            <div class="file-badges">
+              <span class="badge-fmt">PDF</span>
+              <span class="badge-fmt">CSV</span>
+              <span class="badge-fmt">TXT</span>
+            </div>
+          </div>
+
+          <!-- Drop Target Box -->
+          <div class="drop-zone" id="dropZone">
+            <input type="file" id="fileInput" accept=".pdf,.csv,.txt" aria-label="Upload Statement File" />
+            <div class="drop-zone-content">
+              <div class="upload-icon-circle">
+                <i data-lucide="upload-cloud"></i>
+              </div>
+              <p class="drop-primary-text" data-i18n="dragDropPrimary">Drag &amp; drop your statement here</p>
+              <p class="drop-secondary-text" data-i18n="dragDropSecondary">or browse files from your computer or phone</p>
+              <label for="fileInput" class="custom-file-btn">
+                <i data-lucide="folder-open"></i>
+                <span data-i18n="btnChooseFile">Choose Statement File</span>
+              </label>
+              <div class="file-selected-info" id="fileNameDisplay">
+                <i data-lucide="file-check"></i>
+                <span id="fileName" data-i18n="noFileSelected">No file selected</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider-text">
+            <span data-i18n="orTestInstantly">or test instantly</span>
+          </div>
+
+          <!-- Random Sample Statement Button -->
+          <button type="button" id="loadSampleBtn" class="sample-btn">
+            <i data-lucide="sparkles"></i>
+            <span data-i18n="btnSampleStatement">Test with Sample Student Statement</span>
+          </button>
+        </div>
+
+        <!-- Right: Manual Cash Entry Card -->
+        <div class="input-card cash-card">
+          <div class="card-header-row">
+            <div class="card-title-group">
+              <span class="card-step-badge">2</span>
+              <div>
+                <h2 data-i18n="step2Title">Add Cash / Pocket Expense</h2>
+                <p class="card-caption" data-i18n="step2Caption">Canteen tea, auto fares, snacks, or gifts</p>
+              </div>
+            </div>
+            <span class="cash-badge">
+              <i data-lucide="banknote"></i>
+              <span data-i18n="cashBadge">Cash Log</span>
+            </span>
+          </div>
+
+          <form id="cashForm" class="cash-form" novalidate>
+            <!-- Description -->
+            <div class="form-group">
+              <label for="cashDesc" data-i18n="labelWhatFor">What was this for?</label>
+              <div class="form-field">
+                <span class="field-icon"><i data-lucide="pen-tool"></i></span>
+                <input type="text" id="cashDesc" placeholder="e.g. Canteen Tea &amp; Samosa, Auto, Xerox" data-i18n-placeholder="phWhatFor" required />
+              </div>
+            </div>
+
+            <!-- Amount + Type Row -->
+            <div class="form-row-dual">
+              <div class="form-group">
+                <label for="cashAmount" data-i18n="labelAmount">Amount (₹)</label>
+                <div class="form-field">
+                  <span class="field-icon rupee-symbol">₹</span>
+                  <input type="number" id="cashAmount" placeholder="0.00" min="1" step="0.01" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="cashType" data-i18n="labelTxType">Transaction Type</label>
+                <div class="form-field">
+                  <span class="field-icon"><i data-lucide="arrow-left-right"></i></span>
+                  <select id="cashType">
+                    <option value="Debit" data-i18n="optDebit">Cash Spent (-)</option>
+                    <option value="Credit" data-i18n="optCredit">Cash Received (+)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Category + Submit Row -->
+            <div class="form-row-dual align-end">
+              <div class="form-group">
+                <label for="cashCategory" data-i18n="labelCategory">Category</label>
+                <div class="form-field">
+                  <span class="field-icon"><i data-lucide="tag"></i></span>
+                  <select id="cashCategory">
+                    <option value="Food & Mess" data-i18n="catFood">Food &amp; Mess</option>
+                    <option value="Travel & Commute" data-i18n="catTravel">Travel &amp; Commute</option>
+                    <option value="Academics & Books" data-i18n="catAcademics">Academics &amp; Books</option>
+                    <option value="Bills & Recharge" data-i18n="catBills">Bills &amp; Recharge</option>
+                    <option value="Shopping & Lifestyle" data-i18n="catShopping">Shopping &amp; Lifestyle</option>
+                    <option value="Other" data-i18n="catOther">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" class="cash-submit-btn" id="addCashBtn">
+                <i data-lucide="plus-circle"></i>
+                <span data-i18n="btnAddCash">Add Cash</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- KPI Summary Strip (Total Credit, Debit, Net Balance) -->
+      <section class="summary-section hidden" id="summarySection" aria-label="KPI Metrics">
+        <div class="kpi-grid">
+          <!-- Total Credited Card -->
+          <div class="kpi-card card-credit">
+            <div class="kpi-card-header">
+              <span class="kpi-title" data-i18n="kpiCreditTitle">Total Credited (Gains)</span>
+              <div class="kpi-icon-wrap credit">
+                <i data-lucide="arrow-down-left"></i>
+              </div>
+            </div>
+            <div class="kpi-card-value" id="totalCredit">₹0.00</div>
+            <div class="kpi-card-footer">
+              <span class="kpi-trend credit">
+                <i data-lucide="trending-up"></i>
+                <span data-i18n="mockupInflow">Inflows</span>
+              </span>
+              <span class="kpi-subtext" data-i18n="kpiCreditSub">Pocket money &amp; prizes</span>
+            </div>
+          </div>
+
+          <!-- Total Debited Card -->
+          <div class="kpi-card card-debit">
+            <div class="kpi-card-header">
+              <span class="kpi-title" data-i18n="kpiDebitTitle">Total Debited (Spent)</span>
+              <div class="kpi-icon-wrap debit">
+                <i data-lucide="arrow-up-right"></i>
+              </div>
+            </div>
+            <div class="kpi-card-value" id="totalDebit">₹0.00</div>
+            <div class="kpi-card-footer">
+              <span class="kpi-trend debit">
+                <i data-lucide="trending-down"></i>
+                <span data-i18n="mockupOutflow">Outflows</span>
+              </span>
+              <span class="kpi-subtext" data-i18n="kpiDebitSub">Mess, bills &amp; shopping</span>
+            </div>
+          </div>
+
+          <!-- Net Balance Profit / Loss Card -->
+          <div class="kpi-card card-balance" id="balanceCard">
+            <div class="kpi-card-header">
+              <span class="kpi-title" data-i18n="kpiBalanceTitle">Net Financial Status</span>
+              <div class="kpi-icon-wrap balance" id="balanceIconWrap">
+                <i data-lucide="scale"></i>
+              </div>
+            </div>
+            <div class="kpi-card-value" id="netBalance">₹0.00</div>
+            <div class="kpi-card-footer">
+              <span class="balance-status-badge" id="balanceStatus" data-i18n="breakEven">Break-even</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Savings Rate Meter & Cash/UPI Split Pill -->
+        <div class="health-strip">
+          <!-- Savings Rate Meter -->
+          <div class="savings-meter-card">
+            <div class="meter-header">
+              <div class="meter-title-wrap">
+                <i data-lucide="gauge"></i>
+                <span class="meter-title" data-i18n="savingsRateTitle">Student Savings Rate</span>
+              </div>
+              <span class="meter-badge" id="savingsMeterBadge">0% Saved</span>
+            </div>
+            <div class="meter-bar-track">
+              <div class="meter-bar-fill" id="savingsMeterFill"></div>
+            </div>
+            <div class="meter-caption" id="savingsMeterCaption" data-i18n="savingsRateTarget">
+              Target: Save at least 20% of pocket allowance.
+            </div>
+          </div>
+
+          <!-- Inflow & Spend Mode Split -->
+          <div class="split-meter-card">
+            <div class="meter-header">
+              <div class="meter-title-wrap">
+                <i data-lucide="pie-chart"></i>
+                <span class="meter-title" data-i18n="paymentSplitTitle">Payment Mode Distribution</span>
+              </div>
+              <span class="meter-badge split-label" id="splitBadge">UPI vs. Cash</span>
+            </div>
+            <div class="split-bar-track">
+              <div class="split-bank-fill" id="splitBankFill" title="Bank / UPI"></div>
+              <div class="split-cash-fill" id="splitCashFill" title="Cash"></div>
+            </div>
+            <div class="split-legend">
+              <div class="split-legend-item">
+                <span class="legend-dot bank"></span>
+                <span id="bankSplitText">Bank / UPI: 0%</span>
+              </div>
+              <div class="split-legend-item">
+                <span class="legend-dot cash"></span>
+                <span id="cashSplitText">Cash: 0%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Smart Student Savings & Reduction Advisor -->
+      <section class="advisor-panel hidden" id="advisorSection" aria-label="Savings Advisor">
+        <div class="advisor-header">
+          <div class="advisor-title-group">
+            <div class="advisor-icon">
+              <i data-lucide="lightbulb"></i>
+            </div>
+            <div>
+              <h2 data-i18n="advisorHeaderTitle">Smart Student Savings Advisor</h2>
+              <p class="advisor-sub" data-i18n="advisorHeaderSub">Algorithmic spending tips to protect your month-end wallet</p>
+            </div>
+          </div>
+          <span id="savingsBadge" class="savings-badge good" data-i18n="badgeBalanced">Balanced</span>
+        </div>
+
+        <div id="advisorTips" class="advisor-grid">
+          <!-- Populated dynamically by app.js -->
+        </div>
+      </section>
+
+      <!-- Analytics Section: Donut Chart + Category Progress Bars -->
+      <section class="analytics-section hidden" id="detailsSection" aria-label="Visual Analytics">
+        <!-- Donut Chart Card -->
+        <div class="analytics-card chart-card">
+          <div class="analytics-card-header">
+            <div>
+              <h2 data-i18n="spendingBreakdownTitle">Spending Breakdown</h2>
+              <p class="card-caption" data-i18n="spendingBreakdownCaption">Click a category segment to filter transactions below</p>
+            </div>
+            <div class="chart-badge">
+              <i data-lucide="donut"></i>
+              <span>Donut View</span>
+            </div>
+          </div>
+
+          <div class="chart-wrapper">
+            <canvas id="categoryDonutChart"></canvas>
+            <div class="chart-center-label" id="chartCenterLabel">
+              <span class="center-title" data-i18n="totalSpentCenter">Total Spent</span>
+              <span class="center-amount" id="chartCenterAmount">₹0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Progress Bars Card -->
+        <div class="analytics-card category-card">
+          <div class="analytics-card-header">
+            <div>
+              <h2 data-i18n="spendingByCategoryTitle">Spending by Category</h2>
+              <p class="card-caption" data-i18n="spendingByCategoryCaption">Sorted from highest to lowest expenditure</p>
+            </div>
+            <button type="button" id="downloadCategoryBtn" class="download-btn">
+              <i data-lucide="file-text"></i>
+              <span data-i18n="btnExportPdf">Export PDF</span>
+            </button>
+          </div>
+
+          <!-- Dynamic Category List -->
+          <div id="categoryList" class="category-list">
+            <!-- Populated by app.js -->
+          </div>
+
+          <div class="category-filter-hint">
+            <i data-lucide="mouse-pointer-click"></i>
+            <span data-i18n="tipFilterHint">Tip: Click any category to isolate transactions</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Enhanced Transaction Log Section -->
+      <section class="transactions-section hidden" id="transactionsSection" aria-label="Transactions Log">
+        <div class="transactions-card">
+          <div class="tx-card-header">
+            <div class="tx-header-left">
+              <h2 data-i18n="detectedTxTitle">Detected &amp; Logged Transactions</h2>
+              <span class="tx-count-pill" id="txCountBadge">0 entries</span>
+            </div>
+
+            <div class="tx-header-actions">
+              <button type="button" id="clearAllBtn" class="clear-btn">
+                <i data-lucide="trash-2"></i>
+                <span data-i18n="btnClearAll">Clear All</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filters and Search Toolbar -->
+          <div class="tx-toolbar">
+            <!-- Live Search Bar -->
+            <div class="search-box">
+              <i data-lucide="search" class="search-icon"></i>
+              <input type="text" id="txSearchInput" placeholder="Search narration, amount, category..." data-i18n-placeholder="phSearchTx" />
+              <button type="button" id="clearSearchBtn" class="clear-search-btn hidden" aria-label="Clear search">
+                <i data-lucide="x"></i>
+              </button>
+            </div>
+
+            <!-- Type / Mode Filter Pills -->
+            <div class="filter-pills" role="radiogroup" aria-label="Transaction Filter">
+              <button type="button" class="filter-pill active" data-filter="all" data-i18n="filterAll">All</button>
+              <button type="button" class="filter-pill" data-filter="Debit" data-i18n="filterDebits">Debits (-)</button>
+              <button type="button" class="filter-pill" data-filter="Credit" data-i18n="filterCredits">Credits (+)</button>
+              <button type="button" class="filter-pill" data-filter="Statement" data-i18n="filterStatement">Statement (UPI/Bank)</button>
+              <button type="button" class="filter-pill" data-filter="Cash" data-i18n="filterCash">Cash Log</button>
+            </div>
+          </div>
+
+          <!-- Active Filter Chip Container -->
+          <div class="active-filter-bar hidden" id="activeFilterBar">
+            <span class="filter-bar-label" data-i18n="activeFilterLabel">Active Filter:</span>
+            <div class="active-chip" id="activeCategoryChip">
+              <span id="activeFilterName">Food &amp; Mess</span>
+              <button type="button" id="removeCategoryFilterBtn" aria-label="Remove category filter">
+                <i data-lucide="x"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Transactions Table -->
+          <div class="table-wrapper">
+            <table class="tx-table">
+              <thead>
+                <tr>
+                  <th scope="col" data-i18n="thDescription">Description / Narration</th>
+                  <th scope="col" data-i18n="thCategory">Category</th>
+                  <th scope="col" data-i18n="thMode">Payment Mode</th>
+                  <th scope="col" class="text-right" data-i18n="thAmount">Amount</th>
+                  <th scope="col" class="text-center" data-i18n="thAction">Action</th>
+                </tr>
+              </thead>
+              <tbody id="transactionTable">
+                <!-- Populated dynamically by app.js -->
+              </tbody>
+            </table>
+
+            <!-- Empty Search State -->
+            <div class="empty-state hidden" id="emptyTxState">
+              <div class="empty-icon-wrap">
+                <i data-lucide="filter-x"></i>
+              </div>
+              <p class="empty-title" data-i18n="emptyFilterTitle">No transactions match your filter</p>
+              <p class="empty-desc" data-i18n="emptyFilterDesc">Try clearing your search query or selecting "All".</p>
+              <button type="button" id="resetFiltersBtn" class="reset-filter-btn" data-i18n="btnResetFilters">Reset All Filters</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Fixed Bottom Action Bar -->
+  <footer class="bottom-actions-bar hidden" id="bottomActions">
+    <div class="bottom-actions-inner">
+      <div class="bottom-status-wrap">
+        <span class="session-active-dot"></span>
+        <span class="bottom-status-text" id="bottomStatusText" data-i18n="workspaceReady">Workspace Ready</span>
+      </div>
+
+      <div class="bottom-btn-group">
+        <button type="button" id="downloadCategoryBtnBottom" class="action-btn download-action-btn">
+          <i data-lucide="file-text"></i>
+          <span data-i18n="btnDownloadReport">Download Report (.pdf)</span>
+        </button>
+
+        <button type="button" id="reuseBtn" class="action-btn reuse-action-btn">
+          <i data-lucide="rotate-ccw"></i>
+          <span data-i18n="btnUseMeAgain">Use Me Again</span>
+        </button>
+
+        <button type="button" id="finishBtn" class="action-btn finish-action-btn">
+          <i data-lucide="check-check"></i>
+          <span data-i18n="btnFinished">Finished</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Celebratory Thank You Modal on "Finished" -->
+  <div id="celebrateModal" class="modal-overlay" aria-hidden="true" role="dialog">
+    <div class="celebrate-card">
+      <div class="celebrate-badge">🎉</div>
+      <h2 class="celebrate-title" data-i18n="celebrateTitle">Session Complete!</h2>
+      <p class="celebrate-lead" data-i18n="celebrateLead">
+        Great job, <strong id="celebrateUserName">Student</strong>! Every rupee tracked today brings you closer to stress-free student finances.
+      </p>
+
+      <!-- Session Summary Stats -->
+      <div class="celebrate-stats">
+        <div class="c-stat">
+          <span class="c-stat-label" data-i18n="cStatInflow">Total Inflow</span>
+          <span class="c-stat-val credit" id="cStatCredit">₹0.00</span>
+        </div>
+        <div class="c-stat">
+          <span class="c-stat-label" data-i18n="cStatSpent">Total Spent</span>
+          <span class="c-stat-val debit" id="cStatDebit">₹0.00</span>
+        </div>
+        <div class="c-stat">
+          <span class="c-stat-label" data-i18n="cStatNet">Net Balance</span>
+          <span class="c-stat-val profit" id="cStatBalance">₹0.00</span>
+        </div>
+      </div>
+
+      <div class="celebrate-actions">
+        <button type="button" id="celebrateDownloadBtn" class="celebrate-btn secondary">
+          <i data-lucide="file-text"></i>
+          <span data-i18n="btnDownloadPdfReport">Download PDF Report</span>
+        </button>
+        <button type="button" id="celebrateLogoutBtn" class="celebrate-btn primary">
+          <span data-i18n="btnBackToPortal">Back to Portal / Sign Out</span>
+          <i data-lucide="arrow-right"></i>
+        </button>
+      </div>
+
+      <button type="button" id="celebrateCloseBtn" class="celebrate-dismiss" data-i18n="btnContinueTracking">Continue Tracking In Workspace</button>
+    </div>
+  </div>
+
+  <!-- Quick Edit Modal -->
+  <div id="editTxModal" class="modal-overlay" aria-hidden="true" role="dialog">
+    <div class="modal-card edit-card">
+      <div class="modal-header">
+        <div class="modal-brand">
+          <div class="modal-icon"><i data-lucide="pencil"></i></div>
+          <h3>Edit Transaction</h3>
+        </div>
+        <button type="button" id="closeEditModalBtn" class="close-modal-btn">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <form id="editTxForm" class="edit-tx-form">
+        <input type="hidden" id="editTxIndex" />
+        <div class="form-group">
+          <label for="editDesc">Description</label>
+          <div class="form-field">
+            <input type="text" id="editDesc" required />
+          </div>
+        </div>
+
+        <div class="form-row-dual">
+          <div class="form-group">
+            <label for="editAmount">Amount (₹)</label>
+            <div class="form-field">
+              <span class="field-icon rupee-symbol">₹</span>
+              <input type="number" id="editAmount" min="0.01" step="0.01" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="editType">Type</label>
+            <div class="form-field">
+              <select id="editType">
+                <option value="Debit">Debit (-)</option>
+                <option value="Credit">Credit (+)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editCategory">Category</label>
+          <div class="form-field">
+            <select id="editCategory">
+              <option value="Food & Mess" data-i18n="catFood">Food &amp; Mess</option>
+              <option value="Travel & Commute" data-i18n="catTravel">Travel &amp; Commute</option>
+              <option value="Academics & Books" data-i18n="catAcademics">Academics &amp; Books</option>
+              <option value="Bills & Recharge" data-i18n="catBills">Bills &amp; Recharge</option>
+              <option value="Shopping & Lifestyle" data-i18n="catShopping">Shopping &amp; Lifestyle</option>
+              <option value="Income / Gain" data-i18n="catIncome">Income / Gain</option>
+              <option value="Other" data-i18n="catOther">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-btn-row">
+          <button type="button" id="cancelEditBtn" class="btn-cancel">Cancel</button>
+          <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Localization & Workspace Scripts -->
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

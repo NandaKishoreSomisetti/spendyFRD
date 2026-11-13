@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>spendyFRD — Student Money Companion</title>
+  <meta name="description" content="100% browser-private student expense analyzer. Parse bank statements, track cash spends, and unlock smart student savings." />
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="auth.css" />
+</head>
+<body>
+  <!-- Corner Actions: Language Selector & About Us -->
+  <div class="corner-actions">
+    <!-- Language Selector Dropdown -->
+    <div class="lang-selector-wrap">
+      <i data-lucide="globe" class="lang-globe-icon"></i>
+      <select id="langSelect" class="lang-select" aria-label="Select Language">
+        <option value="en">English (EN)</option>
+        <option value="te">తెలుగు (Telugu)</option>
+        <option value="hi">हिन्दी (Hindi)</option>
+      </select>
+    </div>
+
+    <!-- About Us Button -->
+    <button type="button" id="aboutBtn" class="about-corner-btn" aria-label="About spendyFRD">
+      <i data-lucide="info"></i>
+      <span data-i18n="aboutUs">About Us</span>
+    </button>
+  </div>
+
+  <!-- About Us Modal -->
+  <div id="aboutModal" class="modal-overlay" aria-hidden="true" role="dialog">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-brand">
+          <div class="modal-icon">
+            <span>₹</span>
+          </div>
+          <div>
+            <h3 data-i18n="aboutTitle">About spendyFRD</h3>
+            <span class="modal-tagline" data-i18n="appTagline">Student Money Companion</span>
+          </div>
+        </div>
+        <button type="button" id="closeAboutBtn" class="close-modal-btn" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <p class="modal-lead" data-i18n="aboutLead">
+        <strong>spendyFRD</strong> is engineered specifically to help college students conquer their monthly allowance, hostel mess bills, UPI micro-transactions, and cash spends with complete clarity.
+      </p>
+
+      <div class="modal-points">
+        <div class="modal-point">
+          <div class="point-icon-wrap emerald">
+            <i data-lucide="file-spreadsheet"></i>
+          </div>
+          <div>
+            <strong data-i18n="aboutPoint1Title">Instant Statement &amp; Cash Clarity</strong>
+            <p data-i18n="aboutPoint1Desc">Drag and drop PhonePe, GPay, Paytm, or bank statements (PDF, CSV, TXT) and log pocket cash to compute real net profit or loss instantly.</p>
+          </div>
+        </div>
+
+        <div class="modal-point">
+          <div class="point-icon-wrap blue">
+            <i data-lucide="sparkles"></i>
+          </div>
+          <div>
+            <strong data-i18n="aboutPoint2Title">Smart Student Savings Advisor</strong>
+            <p data-i18n="aboutPoint2Desc">Analyzes overspending on food delivery, late-night snacks, or quick-commerce and recommends achievable monthly savings using the 80/20 campus rule.</p>
+          </div>
+        </div>
+
+        <div class="modal-point">
+          <div class="point-icon-wrap purple">
+            <i data-lucide="shield-check"></i>
+          </div>
+          <div>
+            <strong data-i18n="aboutPoint3Title">100% Private &amp; Browser-Native</strong>
+            <p data-i18n="aboutPoint3Desc">All parsing, calculations, and data persistence happen strictly in your browser via local storage. Your financial data never touches an external server.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Developer Credit Section (Preserved) -->
+      <div class="developer-credit">
+        <span class="dev-badge">
+          <i data-lucide="code-2"></i>
+          <span data-i18n="developerCreditLabel">Developer</span>
+        </span>
+        <p><span data-i18n="developerCreditText">Designed &amp; Developed by</span> <strong>Somisetti Nanda Kishore Gupta</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Split-Screen Container -->
+  <main class="auth-wrapper">
+    <!-- Left Showcase Panel -->
+    <section class="brand-panel">
+      <div class="glow-circle one"></div>
+      <div class="glow-circle two"></div>
+      <div class="grid-overlay"></div>
+
+      <div class="brand-content">
+        <!-- Brand Header -->
+        <header class="brand-header">
+          <div class="rupee-icon">₹</div>
+          <div class="brand-text">
+            <div class="brand-name">spendy<span>FRD</span></div>
+            <div class="brand-tagline" data-i18n="appTagline">Student Money Companion</div>
+          </div>
+        </header>
+
+        <!-- Punchy Value Proposition -->
+        <h1 class="brand-headline" data-i18n="headline">
+          Master your pocket money before the month ends.
+        </h1>
+        <p class="brand-description" data-i18n="subheadline">
+          Drop your bank PDF, UPI exports, or canteen cash spends. Get instant profit/loss clarity, categorized analytics, and smart advice on where to save.
+        </p>
+
+        <!-- Interactive Floating Mockup Preview Card -->
+        <div class="live-mockup-card">
+          <div class="mockup-header">
+            <div class="mockup-title-wrap">
+              <span class="live-dot" aria-hidden="true"></span>
+              <span class="mockup-title" data-i18n="mockupTitle">Campus Allowance Tracker</span>
+            </div>
+            <span class="mockup-badge">Nov 2026</span>
+          </div>
+
+          <div class="mockup-kpi-row">
+            <div class="mockup-kpi">
+              <span class="kpi-label" data-i18n="mockupInflow">Allowance Inflow</span>
+              <span class="kpi-val credit">+₹12,000</span>
+            </div>
+            <div class="mockup-kpi">
+              <span class="kpi-label" data-i18n="mockupOutflow">Total Outflow</span>
+              <span class="kpi-val debit">-₹7,450</span>
+            </div>
+            <div class="mockup-kpi">
+              <span class="kpi-label" data-i18n="mockupSaved">Net Saved</span>
+              <span class="kpi-val profit">+₹4,550</span>
+            </div>
+          </div>
+
+          <div class="mockup-bar-wrap">
+            <div class="mockup-bar-label">
+              <span data-i18n="mockupTarget">80/20 Campus Savings Target</span>
+              <span class="mockup-bar-pct" data-i18n="mockupTargetSafe">38% Saved (Safe)</span>
+            </div>
+            <div class="mockup-progress-track">
+              <div class="mockup-progress-fill"></div>
+            </div>
+          </div>
+
+          <div class="mockup-tags">
+            <span class="mockup-chip"><i data-lucide="utensils"></i> Food: ₹2,800</span>
+            <span class="mockup-chip"><i data-lucide="bus"></i> Travel: ₹850</span>
+            <span class="mockup-chip"><i data-lucide="shopping-bag"></i> Shopping: ₹1,650</span>
+          </div>
+        </div>
+
+        <!-- Feature Pills -->
+        <div class="feature-pills">
+          <span class="pill"><i data-lucide="file-text"></i> <span data-i18n="pillPdf">PDF, CSV &amp; TXT Parser</span></span>
+          <span class="pill"><i data-lucide="wallet"></i> <span data-i18n="pillDual">Cash + UPI Dual Tracker</span></span>
+          <span class="pill"><i data-lucide="lock"></i> <span data-i18n="pillPrivacy">100% Client-Side Privacy</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Form Panel -->
+    <section class="form-panel">
+      <div class="form-card">
+        <!-- Tab Switcher -->
+        <div class="tab-switch" role="tablist">
+          <button type="button" id="loginTab" class="tab active" role="tab" aria-selected="true">
+            <i data-lucide="log-in"></i>
+            <span data-i18n="tabSignIn">Sign In</span>
+          </button>
+          <button type="button" id="signupTab" class="tab" role="tab" aria-selected="false">
+            <i data-lucide="user-plus"></i>
+            <span data-i18n="tabSignUp">Create Account</span>
+          </button>
+        </div>
+
+        <!-- Form Headings -->
+        <div class="form-title-group">
+          <h2 id="formTitle" data-i18n="welcomeBackTitle">Welcome back, Friend 👋</h2>
+          <p id="formSubtitle" class="subtitle" data-i18n="welcomeBackSub">Log in to check your profit, losses, and spending categories.</p>
+        </div>
+
+        <!-- Auth Form -->
+        <form id="authForm" novalidate>
+          <!-- Full Name (Sign Up only) -->
+          <div class="input-group hidden" id="nameGroup">
+            <label for="studentName" data-i18n="labelFullName">Full Name</label>
+            <div class="input-field">
+              <span class="field-icon"><i data-lucide="user"></i></span>
+              <input type="text" id="studentName" placeholder="e.g. Somisetti Nanda Kishore Gupta" autocomplete="name" />
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="input-group">
+            <label for="email" data-i18n="labelEmail">College or Personal Email</label>
+            <div class="input-field">
+              <span class="field-icon"><i data-lucide="mail"></i></span>
+              <input type="email" id="email" placeholder="student@gmail.com" autocomplete="email" required />
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="input-group">
+            <label for="password" data-i18n="labelPassword">Password</label>
+            <div class="input-field">
+              <span class="field-icon"><i data-lucide="lock"></i></span>
+              <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" required />
+              <button type="button" id="togglePassword" class="eye-btn" aria-label="Toggle password visibility">
+                <i data-lucide="eye" id="eyeIcon"></i>
+                <span id="eyeText" data-i18n="btnShow">Show</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Inline Status Message -->
+          <div id="authMessage" class="auth-message" aria-live="polite"></div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="submitBtn" class="primary-btn">
+            <span data-i18n="btnSignIn">Sign In to spendyFRD</span>
+            <i data-lucide="arrow-right"></i>
+          </button>
+        </form>
+
+        <!-- Instant Guest Demo Row -->
+        <div class="quick-demo">
+          <div class="demo-info">
+            <i data-lucide="zap"></i>
+            <span data-i18n="testingPrompt">Testing the app?</span>
+          </div>
+          <button type="button" id="guestBtn" class="guest-btn">
+            <span data-i18n="btnGuestDemo">Instant Guest Demo</span>
+            <i data-lucide="sparkle"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script src="i18n.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>
